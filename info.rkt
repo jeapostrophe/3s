@@ -1,5 +1,5 @@
 #lang setup/infotab
-(define collection "3s")
+(define collection 'multi)
 (define deps
   (list "base"
         "openal"
