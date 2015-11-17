@@ -1,7 +1,8 @@
 #lang setup/infotab
 (define collection 'multi)
 (define deps
-  (list "base"
+  (list "lux"
+        "base"
         "openal"
        ))
 (define build-deps

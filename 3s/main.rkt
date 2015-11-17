@@ -2,7 +2,6 @@
 (require racket/contract
          racket/match
          racket/list
-         gb/data/psn
          openal
          openal/path)
 
@@ -33,7 +32,7 @@
                     #:gain [gain 1.0]
                     #:pause-f [pause-f (λ (x) #f)])
   (λ (w)
-    (sound-state (a-f w) (psn 0.0 0.0) gain #t #t (pause-f w))))
+    (sound-state (a-f w) (make-rectangular 0.0 0.0) gain #t #t (pause-f w))))
 (define (sound-at a p
                   #:gain [gain 1.0]
                   #:looping? [looping? #f]
@@ -104,8 +103,8 @@
      srcs))
 
   (alListener3f AL_POSITION
-                (/ (psn-x lp) scale)
-                (/ (psn-y lp) scale)
+                (/ (real-part lp) scale)
+                (/ (imag-part lp) scale)
                 0.0)
 
   (define srcs*
@@ -123,8 +122,8 @@
            (f w))
         [(and new (sound-state a p gain relative? looping? paused?))
          (alSource3f srci AL_POSITION
-                     (/ (psn-x p) scale)
-                     (/ (psn-y p) scale)
+                     (/ (real-part p) scale)
+                     (/ (imag-part p) scale)
                      0.0)
          (alSourcef srci AL_GAIN gain)
          (alSourceb srci AL_LOOPING looping?)
@@ -155,10 +154,10 @@
 
 (provide/contract
  [audio? contract?]
- [path->audio (-> path? audio?)]
+ [path->audio (-> path-string? audio?)]
  [struct sound-state
          ([audio audio?]
-          [posn psn?]
+          [posn inexact?]
           [gain inexact?]
           [relative? boolean?]
           [looping? boolean?]
@@ -171,11 +170,11 @@
        (#:gain inexact? #:pause-f (-> any/c boolean?))
        sound/c)]
  [sound-at
-  (->* (audio? psn?)
+  (->* (audio? inexact?)
        (#:gain inexact? #:looping? boolean? #:pause-f (-> any/c boolean?))
        sound/c)]
  [sound-on
-  (->* (audio? (-> any/c psn?))
+  (->* (audio? (-> any/c inexact?))
        (#:gain inexact? #:looping? boolean? #:pause-f (-> any/c boolean?))
        sound/c)]
  [sound-until
@@ -195,5 +194,5 @@
  [sound-unpause! (-> system-state? void)]
  [sound-destroy! (-> system-state? void)]
  [render-sound
-  (-> system-state? real? psn? any/c sound-scape/c
+  (-> system-state? real? inexact? any/c sound-scape/c
       system-state?)])
