@@ -6,4 +6,6 @@
         "openal"
        ))
 (define build-deps
-  (list))
+  (list "racket-doc"
+        "scribble-lib"
+       ))
