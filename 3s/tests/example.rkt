@@ -11,6 +11,7 @@
     (parameterize ([current-custodian new-custodian])
       (thread
        (lambda ()
+         (define sc (make-sound-context))
          (define track1 (path->audio track1-pth))
          (displayln "T Initializing")
          (define ss0 (initial-system-state sc))
